@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yet-another-generator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: yet-another-generator
+  template:
+    metadata:
+      labels:
+        app: yet-another-generator
+    spec:
+      containers:
+      - name: yet-another-generator
+        image: tabul4r4s4/hw13_generator:latest
+        ports:
+        - containerPort: 8000

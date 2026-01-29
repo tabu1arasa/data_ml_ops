@@ -1,0 +1,7 @@
+services:
+  yet_another_generator:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
