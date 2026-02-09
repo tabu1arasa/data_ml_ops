@@ -1,0 +1,74 @@
+namespace: default
+
+backend:
+  enabled: true
+  name: "yet-another-generator"
+  
+  image:
+    repository: "tabul4r4s4/dataops_hw14"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+  
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  
+  shm:
+    enabled: true
+    sizeLimit: "128Mi"
+  
+  replicaCount: 2
+  containerPort: 8000
+  
+  env:
+    REDIS_HOST: "{{ .Release.Name }}-redis-service"
+    REDIS_PORT: "6379"
+  
+  service:
+    enabled: true
+    type: "ClusterIP"
+    port: 80
+    targetPort: 8000
+  
+  ingress:
+    enabled: false
+    className: "nginx"
+    host: "example.com"
+    path: "/"
+    pathType: "Prefix"
+
+redis:
+  enabled: true
+  name: "redis"
+  
+  image:
+    repository: "redis"
+    tag: "8.4.0-alpine"
+    pullPolicy: "IfNotPresent"
+  
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  
+  replicaCount: 1
+  containerPort: 6379
+  
+  service:
+    enabled: true
+    type: "ClusterIP"
+    port: 6379
+    targetPort: 6379
+
+networkPolicy:
+  enabled: true
+  name: "generator-to-redis"

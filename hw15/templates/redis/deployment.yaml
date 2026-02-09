@@ -1,0 +1,49 @@
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis.deployment.name" . }}
+  labels:
+    app: {{ .Values.redis.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.redis.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.name }}
+    spec:
+      containers:
+      - name: {{ .Values.redis.name }}
+        {{- /* === Redis image version === */}}
+        image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+        imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.redis.containerPort }}
+        {{- /* === Redis limits and requests === */}}
+        {{- if .Values.redis.resources.enabled }}
+        resources:
+          {{- if .Values.redis.resources.requests }}
+          requests:
+            {{- if .Values.redis.resources.requests.memory }}
+            memory: {{ .Values.redis.resources.requests.memory | quote }}
+            {{- end }}
+            {{- if .Values.redis.resources.requests.cpu }}
+            cpu: {{ .Values.redis.resources.requests.cpu | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.redis.resources.limits }}
+          limits:
+            {{- if .Values.redis.resources.limits.memory }}
+            memory: {{ .Values.redis.resources.limits.memory | quote }}
+            {{- end }}
+            {{- if .Values.redis.resources.limits.cpu }}
+            cpu: {{ .Values.redis.resources.limits.cpu | quote }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+{{- end }}
