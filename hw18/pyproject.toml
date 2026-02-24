@@ -1,0 +1,10 @@
+[project]
+name = "hw18"
+version = "1.0.0"
+description = "Simple hw project"
+
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "yoyo-migrations[postgres]>=9,<10",
+] 
