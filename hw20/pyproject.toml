@@ -1,0 +1,11 @@
+[project]
+name = "mlflow-homework"
+version = "1.0.0"
+requires-python = ">=3.11,<3.12"
+
+dependencies = [
+    "mlflow>=2.11,<2.12",
+    "psycopg2-binary>=2.9.11,<3",
+    "gevent>=23.9.1,<25",
+    "setuptools>=81,<82"
+]
