@@ -1,0 +1,54 @@
+x-airflow: &airflow
+  image: apache/airflow:2.11.0
+  env_file: .env
+  user: airflow:1000
+  networks:
+  - airflowhw
+  entrypoint: ["/bin/sh", "-c"]
+  volumes:
+  - airflow:/app/data/home
+  - ./data/airflow/dags:/opt/airflow/dags
+
+services:
+  db:
+    image: postgres:18
+    env_file: .env
+    ports:
+      - 5432:5432
+    networks:
+      - airflowhw
+
+  airflow.db.init:
+    <<: *airflow
+    command: ["airflow db init"]
+
+  airflow.db.migrate:
+    <<: *airflow
+    command: ["airflow db migrate"]
+
+  airflow.webserver:
+    <<: *airflow
+    ports:
+      - 8080:8080
+    command: ["airflow webserver"]
+
+  airflow.scheduler:
+    <<: *airflow
+    command: ["airflow scheduler"]
+
+  airflow.triggerer:
+    <<: *airflow
+    command: ["airflow triggerer"]
+
+volumes:
+  airflow:
+    name: airflow
+    driver: local
+    driver_opts:
+      type: none
+      device: data/airflow
+      o: bind
+
+networks:
+  airflowhw:
+    name: airflowhw
